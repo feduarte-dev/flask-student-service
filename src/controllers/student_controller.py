@@ -49,5 +49,15 @@ def delete_student(enrollment_number: str):
     student = _get_student(enrollment_number)
     if student is None:
         return jsonify(), 404
+
     student.delete()
     return jsonify(), 204
+
+
+@student_controller.route("/<enrollment_number>", methods=["PUT"])
+def update_student(enrollment_number: str):
+    student = _get_student(enrollment_number)
+    if student is None:
+        return "", 404
+    student.update(request.json)
+    return jsonify(student.to_dict()), 200
