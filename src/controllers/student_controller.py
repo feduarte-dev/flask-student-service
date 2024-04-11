@@ -32,6 +32,9 @@ def get_student(enrollment_number: str):
     return jsonify(student.to_dict()), 200
 
 
+# sem eu passar o status code, ele está retornando um 200. como consegue?
+
+
 @student_controller.route("/", methods=["POST"])
 def create_student():
     if "name" not in request.json or "enrollment_number" not in request.json:
@@ -41,4 +44,10 @@ def create_student():
     return jsonify(new_student.to_dict()), 201
 
 
-# sem eu passar o status code, ele está retornando um 200. como consegue?
+@student_controller.route("/<enrollment_number>", methods=["DELETE"])
+def delete_student(enrollment_number: str):
+    student = _get_student(enrollment_number)
+    if student is None:
+        return jsonify(), 404
+    student.delete()
+    return jsonify(), 204
