@@ -12,11 +12,11 @@ def _get_all_students():
 # essa funcao cria a estrutura para a response?
 
 
-def _get_student(enrollment_number: str):
+def _get_student(enrollment_number: int):
     return StudentModel.find_one({"enrollment_number": enrollment_number})
 
 
-@student_controller.route("/", methods=["GET"])
+@student_controller.route("", methods=["GET"])
 def get_all_students():
     students = _get_all_students()
     if students is None:
@@ -25,7 +25,7 @@ def get_all_students():
 
 
 @student_controller.route("/<enrollment_number>", methods=["GET"])
-def get_student(enrollment_number: str):
+def get_student(enrollment_number: int):
     student = _get_student(enrollment_number)
     if student is None:
         return jsonify(), 404
@@ -35,17 +35,17 @@ def get_student(enrollment_number: str):
 # sem eu passar o status code, ele está retornando um 200. como consegue?
 
 
-@student_controller.route("/", methods=["POST"])
+@student_controller.route("", methods=["POST"])
 def create_student():
     if "name" not in request.json or "enrollment_number" not in request.json:
-        return 400
+        return jsonify(), 400
     new_student = StudentModel(request.json)
     new_student.save()
     return jsonify(new_student.to_dict()), 201
 
 
 @student_controller.route("/<enrollment_number>", methods=["DELETE"])
-def delete_student(enrollment_number: str):
+def delete_student(enrollment_number: int):
     student = _get_student(enrollment_number)
     if student is None:
         return jsonify(), 404
@@ -55,9 +55,12 @@ def delete_student(enrollment_number: str):
 
 
 @student_controller.route("/<enrollment_number>", methods=["PUT"])
-def update_student(enrollment_number: str):
+def update_student(enrollment_number: int):
     student = _get_student(enrollment_number)
     if student is None:
         return "", 404
     student.update(request.json)
     return jsonify(student.to_dict()), 200
+
+
+# devo retornar strings vazias ou jsonify sem argumento?
