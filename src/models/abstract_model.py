@@ -17,14 +17,16 @@ class AbstractModel:
         return self
 
     def update(self, data):
-        result = self._collection.find_one_and_update(
-            {"_id": str(self.data["_id"])},
+        self.data = self._collection.find_one_and_update(
+            {"enrollment_number": self.data["enrollment_number"]},
             {"$set": data},
             return_document=ReturnDocument.AFTER,
         )
 
-        self.data = result
-        return self.data
+        return {
+            "name": self.data["name"],
+            "enrollment_number": self.data["enrollment_number"],
+        }
 
     def delete(self):
         self._collection.delete_one({"_id": self.data["_id"]})
