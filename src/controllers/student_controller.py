@@ -53,5 +53,7 @@ def update_student(enrollment_number: int):
     student = _get_student(enrollment_number)
     if student is None:
         return "", 404
+    if not request.json:
+        return jsonify({"error": "No data provided"}), 400
     student.update(request.json)
     return jsonify(student.to_dict()), 200
